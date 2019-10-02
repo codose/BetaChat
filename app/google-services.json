@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "506153290822",
+    "firebase_url": "https://betachat-9542d.firebaseio.com",
+    "project_id": "betachat-9542d",
+    "storage_bucket": "betachat-9542d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:506153290822:android:8205b3277ce0a195e70e47",
+        "android_client_info": {
+          "package_name": "com.codose.betachat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "506153290822-1lntiokckk5gagk2vitpdgl8h52vr634.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.codose.betachat",
+            "certificate_hash": "23cd63235737c9f963e1e48e3615f82003320fbb"
+          }
+        },
+        {
+          "client_id": "506153290822-1au6e6pmlnr9r0f4l49b3ihe9euh1l9f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC6Hk66FgiZeZWChXDbckw44tSGdGvdqIU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "506153290822-1au6e6pmlnr9r0f4l49b3ihe9euh1l9f.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
