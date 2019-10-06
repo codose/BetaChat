@@ -5,6 +5,9 @@
     <item android:id="@+id/mSettings"
         android:title="@string/account_settings" />
     <item
+        android:id="@+id/mUsers"
+        android:title="Users" />
+    <item
         android:id="@+id/mLogOut"
         android:title="@string/log_out" />
 </menu>

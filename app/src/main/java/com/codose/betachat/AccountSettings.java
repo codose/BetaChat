@@ -7,6 +7,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
@@ -14,10 +15,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -32,11 +35,20 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.mikhaellopez.circularimageview.CircularImageView;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
+
+import id.zelory.compressor.Compressor;
 
 public class AccountSettings extends AppCompatActivity {
     private CircularImageView mProfilePic;
@@ -47,6 +59,7 @@ public class AccountSettings extends AppCompatActivity {
     private FirebaseUser currentUser;
     private FirebaseAuth mAuth;
     private static final int Gallery_pic =1;
+    private ProgressBar progressBar;
 
     private StorageReference mStorage;
 
@@ -68,6 +81,7 @@ public class AccountSettings extends AppCompatActivity {
         mPhone = findViewById(R.id.phone);
         mFullname = findViewById(R.id.full_name);
         img_edit = findViewById(R.id.edit_img);
+        progressBar = findViewById(R.id.progressBar2);
 
         mStorage = FirebaseStorage.getInstance().getReference();
 
@@ -93,13 +107,15 @@ public class AccountSettings extends AppCompatActivity {
 
         mUserInfo = FirebaseDatabase.getInstance().getReference().child("Users").child(mUid);
 
+        mUserInfo.keepSynced(true);
+
         mUserInfo.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String username = dataSnapshot.child("username").getValue().toString();
                 String image = dataSnapshot.child("image").getValue().toString();
                 String status = dataSnapshot.child("status").getValue().toString();
-                String thumb = dataSnapshot.child("t_img").getValue().toString();
+                final String thumb = dataSnapshot.child("t_img").getValue().toString();
                 String name = dataSnapshot.child("fullname").getValue().toString();
                 String phone = dataSnapshot.child("phone").getValue().toString();
                 mUsername.setText(username);
@@ -107,18 +123,42 @@ public class AccountSettings extends AppCompatActivity {
                 mPhone.setText(phone);
                 mFullname.setText(name);
                 mEmail.setText(currentUser.getEmail());
+                if(!image.equals("default")){
+                    //Picasso.get().load(thumb).placeholder(R.drawable.headshot).into(mProfilePic);
+                    Picasso.get().load(thumb).networkPolicy(NetworkPolicy.OFFLINE)
+                            .placeholder(R.drawable.headshot).into(mProfilePic, new Callback() {
+                        @Override
+                        public void onSuccess() {
 
-                Picasso.get().load(image).into(mProfilePic);
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+
+                            Picasso.get().load(thumb).placeholder(R.drawable.headshot).into(mProfilePic);
+
+                        }
+                    });
+                }
+                progressBar.setVisibility(View.GONE);
+
 
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                progressBar.setVisibility(View.GONE);
+                Toast.makeText(AccountSettings.this,"Unable to load user info please try again",Toast.LENGTH_LONG).show();
             }
         });
 
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -179,29 +219,67 @@ public class AccountSettings extends AppCompatActivity {
                 mProgressUpload.setCanceledOnTouchOutside(false);
                 mProgressUpload.show();
 
-                Uri resultUri = result.getUri();
+                final Uri resultUri = result.getUri();
+                final File thumb_path = new File(resultUri.getPath());
+
+                final Bitmap thumb_bit = new Compressor(this)
+                        .setMaxWidth(200)
+                        .setMaxHeight(200)
+                        .setQuality(75)
+                        .compressToBitmap(thumb_path);
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                thumb_bit.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                final byte[] thumb_byte = baos.toByteArray();
+
+
                 String cUid = currentUser.getUid();
 
                 final StorageReference filepath = mStorage.child("profile_img").child(cUid + ".jpg");
+                final StorageReference thumb_file = mStorage.child("profile_img").child("thumbs").child(cUid + ".jpg");
                 filepath.putFile(resultUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                     @Override
-                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                        if(task.isSuccessful()){
+                    public void onComplete(@NonNull final Task<UploadTask.TaskSnapshot> task) {
+                        if (task.isSuccessful()) {
                             filepath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {
-                                    String download_uri = uri.toString();
-                                    Toast.makeText(AccountSettings.this, download_uri,
-                                            Toast.LENGTH_SHORT).show();
-
-                                    mUserInfo.child("image").setValue(download_uri).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    final String download_uri = uri.toString();
+                                    UploadTask uploadTask = thumb_file.putBytes(thumb_byte);
+                                    uploadTask.addOnFailureListener(new OnFailureListener() {
                                         @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if (task.isSuccessful()){
-                                                mProgressUpload.dismiss();
-                                            }
+                                        public void onFailure(@NonNull Exception exception) {
+                                            // Handle unsuccessful uploads
+                                            mProgressUpload.dismiss();
+                                            Toast.makeText(AccountSettings.this,"Upload Error", Toast.LENGTH_LONG).show();
+                                        }
+                                    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                        @Override
+                                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                            thumb_file.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                                @Override
+                                                public void onSuccess(Uri uri) {
+                                                    String thumb_uri = uri.toString();
+                                                    if(task.isSuccessful()){
+                                                        Map updateHash = new HashMap();
+                                                        updateHash.put("image",download_uri);
+                                                        updateHash.put("t_img",thumb_uri);
+                                                        mUserInfo.updateChildren(updateHash).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<Void> task) {
+                                                                if (task.isSuccessful()) {
+                                                                    mProgressUpload.dismiss();
+                                                                }
+                                                            }
+                                                        });
+                                                    }
+                                                }
+                                            });
+
+                                            // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
+                                            // ...
                                         }
                                     });
+
                                 }
                             });
 

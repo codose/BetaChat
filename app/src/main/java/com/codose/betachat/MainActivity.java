@@ -76,6 +76,10 @@ public class MainActivity extends AppCompatActivity {
             case R.id.mSettings:
                 Intent i = new Intent(this,AccountSettings.class);
                 startActivity(i);
+                break;
+            case R.id.mUsers:
+                Intent intent = new Intent(this,AllUsers.class);
+                startActivity(intent);
         }
 
         return true;

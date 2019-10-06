@@ -32,6 +32,8 @@ public class Register extends AppCompatActivity {
 
     private DatabaseReference mDatabase;
 
+    private String default_img = "https://firebasestorage.googleapis.com/v0/b/betachat-9542d.appspot.com/o/profile_img%2Fheadshot.png?alt=media&token=817f8674-16da-4ed1-b787-90ca5f116374";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
