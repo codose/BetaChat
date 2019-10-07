@@ -1,4 +1,4 @@
-package com.codose.betachat;
+package com.codose.betachat.Models;
 
 import android.app.Application;
 import android.content.Context;

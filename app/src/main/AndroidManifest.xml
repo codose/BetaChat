@@ -7,7 +7,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
-        android:name=".BetaChat"
+        android:name=".Models.BetaChat"
         android:allowBackup="true"
         android:icon="@mipmap/logo"
         android:label="@string/app_name"
@@ -18,7 +18,7 @@
             android:parentActivityName=".MainActivity"></activity>
 
         <service
-            android:name=".FirebaseMessagingService"
+            android:name=".Models.FirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

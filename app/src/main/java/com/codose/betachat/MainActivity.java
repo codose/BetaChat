@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
             mUserRef = FirebaseDatabase.getInstance().getReference()
                     .child("Users").child(mAuth.getCurrentUser().getUid());
         }
+        mViewpager.setCurrentItem(1);
 
 
     }

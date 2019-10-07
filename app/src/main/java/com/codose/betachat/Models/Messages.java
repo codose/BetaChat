@@ -1,4 +1,4 @@
-package com.codose.betachat;
+package com.codose.betachat.Models;
 
 public class Messages {
     private String message, type,from;

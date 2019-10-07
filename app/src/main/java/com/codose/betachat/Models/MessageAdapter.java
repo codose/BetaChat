@@ -1,4 +1,4 @@
-package com.codose.betachat;
+package com.codose.betachat.Models;
 
 import android.graphics.Color;
 import android.view.Gravity;
@@ -9,10 +9,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.codose.betachat.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.mikhaellopez.circularimageview.CircularImageView;
 

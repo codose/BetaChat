@@ -1,8 +1,6 @@
 package com.codose.betachat;
 
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -15,8 +13,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.codose.betachat.Models.Chat;
+import com.codose.betachat.Models.GetTimeAgo;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -110,11 +109,24 @@ public class Chats extends Fragment {
                         final String username = dataSnapshot.child("username").getValue().toString();
                         String status = dataSnapshot.child("status").getValue().toString();
                         String t_img = dataSnapshot.child("t_img").getValue().toString();
+                        String online = dataSnapshot.child("online").getValue().toString();
 
                         if(dataSnapshot.hasChild("online")){
                             String userOnline = dataSnapshot.child("online").getValue().toString();
                             holder.setUserOnline(userOnline);
                         }
+
+                        if(online.equals("true")){
+                            holder.setLastSeen("Online");
+                        }else{
+
+                            GetTimeAgo getTimeAgo = new GetTimeAgo();
+                            long lastTime =Long.parseLong(online);
+
+                            String LastSeenTime = getTimeAgo.getTimeAgo(lastTime,getContext());
+                            holder.setLastSeen(LastSeenTime);
+                        }
+
 
                         holder.setName(username);
                         holder.setStatus(status);
@@ -187,6 +199,11 @@ public class Chats extends Fragment {
         }
         public void setDate(final String date){
 
+        }
+        public void setLastSeen(final String lastSeen){
+            TextView LastSeen = (TextView) mView.findViewById(R.id.last_seen);
+            LastSeen.setVisibility(View.VISIBLE);
+            LastSeen.setText(lastSeen);
         }
 
         public void setUserOnline(String online_user){
