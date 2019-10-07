@@ -21,6 +21,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
@@ -327,15 +328,22 @@ public class UserProfile extends AppCompatActivity {
             decline_req.setVisibility(View.GONE);
         }
         mDataRef = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUser.getUid());
-        mDataRef.child("online").setValue(true);
+        mDataRef.child("online").setValue("true");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        mDataRef = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUser.getUid());
+        mDataRef.child("online").setValue(ServerValue.TIMESTAMP);
+
     }
 
     @Override
     protected void onStop() {
         super.onStop();
 
-        mDataRef = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUser.getUid());
-        mDataRef.child("online").setValue(false);
 
     }
 }

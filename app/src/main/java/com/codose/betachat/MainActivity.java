@@ -14,6 +14,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 
 public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
@@ -42,29 +43,35 @@ public class MainActivity extends AppCompatActivity {
         mSectionsAdapter = new SectionsAdapter(getSupportFragmentManager());
         mViewpager.setAdapter(mSectionsAdapter);
         mTabLayout.setupWithViewPager(mViewpager);
+        if(mAuth.getCurrentUser()!=null){
+            mUserRef = FirebaseDatabase.getInstance().getReference()
+                    .child("Users").child(mAuth.getCurrentUser().getUid());
+        }
 
-        mUserRef = FirebaseDatabase.getInstance().getReference()
-                .child("Users").child(mAuth.getCurrentUser().getUid());
+
     }
     @Override
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
+
         if(currentUser == null || !currentUser.isEmailVerified()){
             mAuth.signOut();
             launchStart();
         }else{
-            mUserRef.child("online").setValue(true);
+            mUserRef = FirebaseDatabase.getInstance().getReference()
+                    .child("Users").child(mAuth.getCurrentUser().getUid());
+            mUserRef.child("online").setValue("true");
         }
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-
-        mUserRef.child("online").setValue(false);
+    protected void onPause() {
+        super.onPause();
+        mUserRef.child("online").setValue(ServerValue.TIMESTAMP);
     }
+
 
     private void launchStart() {
         Intent startIntent = new Intent(getApplicationContext(),StartActivity.class);

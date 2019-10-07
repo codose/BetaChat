@@ -67,13 +67,13 @@
 
     <View
         android:id="@+id/online_icon"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:layout_marginStart="16dp"
         android:background="@drawable/circle"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline10"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/user_single"
+        app:layout_constraintStart_toEndOf="@+id/user_single"
+        app:layout_constraintTop_toTopOf="@+id/user_single"
         tools:visibility="invisible" />
 
     <androidx.constraintlayout.widget.Guideline

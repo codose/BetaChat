@@ -1,6 +1,8 @@
 package com.codose.betachat;
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -13,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -89,7 +92,7 @@ public class FriendsFragment extends Fragment {
                 .child(current_uid)
                 .limitToLast(50);
 
-        FirebaseRecyclerOptions<Friend> options =
+        final FirebaseRecyclerOptions<Friend> options =
                 new FirebaseRecyclerOptions.Builder<Friend>()
                         .setQuery(query, Friend.class)
                         .build();
@@ -102,7 +105,7 @@ public class FriendsFragment extends Fragment {
                 UsersDatabase.child(user_id).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        String username = dataSnapshot.child("username").getValue().toString();
+                        final String username = dataSnapshot.child("username").getValue().toString();
                         String status = dataSnapshot.child("status").getValue().toString();
                         String t_img = dataSnapshot.child("t_img").getValue().toString();
 
@@ -114,6 +117,38 @@ public class FriendsFragment extends Fragment {
                         holder.setName(username);
                         holder.setStatus(status);
                         holder.setImage(t_img);
+                        holder.mView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Toast.makeText(getContext(),"Heyy",Toast.LENGTH_LONG).show();
+                                CharSequence[] option = new CharSequence[]{"Open Profile", "Send Message"};
+
+                                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+
+                                builder.setTitle("Select Options");
+                                builder.setItems(option, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        if(which == 0){
+
+                                            Intent prof = new Intent(getContext(),UserProfile.class);
+                                            prof.putExtra("user_id",user_id);
+                                            startActivity(prof);
+
+                                        }
+                                        if(which == 1){
+                                            Intent chat = new Intent(getContext(),ChatActivity.class);
+                                            chat.putExtra("user_id",user_id)
+                                            .putExtra("username",username);
+                                            startActivity(chat);
+
+                                        }
+                                    }
+                                });
+                                builder.show();
+
+                            }
+                        });
 
                     }
 
@@ -181,7 +216,7 @@ public class FriendsFragment extends Fragment {
 
             View view = mView.findViewById(R.id.online_icon);
 
-            if(online_user.equals(true)){
+            if(online_user.equals("true")){
 
                  view.setVisibility(View.VISIBLE);
 

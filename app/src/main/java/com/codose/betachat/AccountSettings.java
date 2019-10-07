@@ -30,6 +30,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -64,6 +65,7 @@ public class AccountSettings extends AppCompatActivity {
     private StorageReference mStorage;
 
     private ProgressDialog mProgress, mProgressUpload;
+    private DatabaseReference mDatabaseRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,6 +120,8 @@ public class AccountSettings extends AppCompatActivity {
                 final String thumb = dataSnapshot.child("t_img").getValue().toString();
                 String name = dataSnapshot.child("fullname").getValue().toString();
                 String phone = dataSnapshot.child("phone").getValue().toString();
+
+
                 mUsername.setText(username);
                 mStatus.setText(status);
                 mPhone.setText(phone);
@@ -157,15 +161,26 @@ public class AccountSettings extends AppCompatActivity {
 
     @Override
     protected void onStart() {
-        super.onStart();
-        progressBar.setVisibility(View.VISIBLE);
 
-        mUserInfo.child("online").setValue(true);
+        currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Users");
+        mDatabaseRef.child(currentUser.getUid()).child("online").setValue("true");
+
+        super.onStart();
+
     }
+
+    @Override
+    protected void onPause() {
+        currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Users");
+        mDatabaseRef.child(currentUser.getUid()).child("online").setValue(ServerValue.TIMESTAMP);
+        super.onPause();
+    }
+
     @Override
     protected void onStop() {
         super.onStop();
-        mUserInfo.child("online").setValue(false);
     }
 
     @Override

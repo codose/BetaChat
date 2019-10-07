@@ -7,13 +7,15 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
+        android:name=".BetaChat"
         android:allowBackup="true"
         android:icon="@mipmap/logo"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/logo"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:name=".BetaChat">
+        android:theme="@style/AppTheme">
+        <activity android:name=".ChatActivity"
+            android:parentActivityName=".MainActivity"></activity>
 
         <service
             android:name=".FirebaseMessagingService"
