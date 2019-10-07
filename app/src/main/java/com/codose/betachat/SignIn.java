@@ -7,22 +7,31 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 public class SignIn extends AppCompatActivity {
     private EditText mLogMail, mPassword;
     private View log_user;
     private TextView new_user;
     private ProgressDialog logProgress;
+
+    private DatabaseReference mDatabaseRef;
+
     private FirebaseAuth mAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +47,8 @@ public class SignIn extends AppCompatActivity {
         new_user = findViewById(R.id.new_user);
 
         logProgress = new ProgressDialog(SignIn.this);
+
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Users");
 
         new_user.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,7 +87,32 @@ public class SignIn extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             logProgress.dismiss();
                             FirebaseUser currentUser = mAuth.getCurrentUser();
+                            final String Cuid = currentUser.getUid();
                             if (currentUser.isEmailVerified()){
+
+
+
+                                FirebaseInstanceId.getInstance().getInstanceId()
+                                        .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                                                if (!task.isSuccessful()) {
+
+                                                    return;
+                                                }
+
+                                                // Get new Instance ID token
+                                                String token = task.getResult().getToken();
+                                                mDatabaseRef.child(Cuid).child("device_token").setValue(token).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void aVoid) {
+
+                                                    }
+                                                });
+
+                                            }
+                                        });
+
                                 Intent main = new Intent(getApplicationContext(),MainActivity.class);
                                 main.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK );
                                 startActivity(main);

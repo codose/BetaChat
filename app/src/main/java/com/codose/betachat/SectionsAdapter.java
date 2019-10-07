@@ -17,13 +17,13 @@ class SectionsAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position){
             case 0:
-                Request request = new Request();
+                RequestFragment request = new RequestFragment();
                 return request;
             case 1:
                 Chats chats = new Chats();
                 return chats;
             case 2:
-                Friends friends = new Friends();
+                FriendsFragment friends = new FriendsFragment();
                 return friends;
             default:
                 return null;

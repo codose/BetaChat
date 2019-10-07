@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -28,6 +29,8 @@ public class AllUsers extends AppCompatActivity {
     private Toolbar mToolbar;
 
     private DatabaseReference mDatabase;
+
+    private FirebaseAuth currentUser;
 
     private RecyclerView rv_user;
     @Override
@@ -50,8 +53,16 @@ public class AllUsers extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         startListening();
+        mDatabase.child(currentUser.getCurrentUser().getUid()).child("online").setValue(true);
 
     }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mDatabase.child(currentUser.getCurrentUser().getUid()).child("online").setValue(false);
+    }
+
     public void startListening(){
         Query query = FirebaseDatabase.getInstance()
                 .getReference()

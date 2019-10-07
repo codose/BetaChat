@@ -12,12 +12,16 @@ import android.view.MenuItem;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private Toolbar mToolbar;
     private SectionsAdapter mSectionsAdapter;
     private TabLayout mTabLayout;
+
+    private DatabaseReference mUserRef;
 
     private ViewPager mViewpager;
     @Override
@@ -38,6 +42,9 @@ public class MainActivity extends AppCompatActivity {
         mSectionsAdapter = new SectionsAdapter(getSupportFragmentManager());
         mViewpager.setAdapter(mSectionsAdapter);
         mTabLayout.setupWithViewPager(mViewpager);
+
+        mUserRef = FirebaseDatabase.getInstance().getReference()
+                .child("Users").child(mAuth.getCurrentUser().getUid());
     }
     @Override
     public void onStart() {
@@ -47,7 +54,16 @@ public class MainActivity extends AppCompatActivity {
         if(currentUser == null || !currentUser.isEmailVerified()){
             mAuth.signOut();
             launchStart();
+        }else{
+            mUserRef.child("online").setValue(true);
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        mUserRef.child("online").setValue(false);
     }
 
     private void launchStart() {

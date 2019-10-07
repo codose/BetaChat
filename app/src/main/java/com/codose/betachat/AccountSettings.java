@@ -159,6 +159,13 @@ public class AccountSettings extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         progressBar.setVisibility(View.VISIBLE);
+
+        mUserInfo.child("online").setValue(true);
+    }
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mUserInfo.child("online").setValue(false);
     }
 
     @Override

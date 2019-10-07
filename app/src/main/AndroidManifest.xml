@@ -14,7 +14,22 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:name=".BetaChat">
-        <activity android:name=".UserProfile"></activity>
+
+        <service
+            android:name=".FirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <activity android:name=".UserProfile">
+            <intent-filter>
+                <action android:name="com.codose.betachat_TARGET_NOTIFICATION" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".AllUsers"
             android:parentActivityName=".MainActivity" />
