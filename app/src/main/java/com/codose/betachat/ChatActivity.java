@@ -30,6 +30,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.mikhaellopez.circularimageview.CircularImageView;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,7 +56,7 @@ public class ChatActivity extends AppCompatActivity {
     private EditText msg_edit;
 
     private Toolbar chat_bar;
-    private TextView mTitleView,mLastseen;
+    private TextView mTitleView,mLastseen, mStatus;
     private CircularImageView dp_img;
 
     private final List<Messages> messageList = new ArrayList<>();
@@ -100,15 +103,35 @@ public class ChatActivity extends AppCompatActivity {
         add_btn = findViewById(R.id.add_btn);
         mMessageList = findViewById(R.id.message_list);
 
+        mStatus = findViewById(R.id.user_status);
+
+
         mAdapter = new MessageAdapter(messageList);
 
         mLinearLayout = new LinearLayoutManager(this);
         mMessageList.setHasFixedSize(true);
         mMessageList.setLayoutManager(mLinearLayout);
 
+        mUserData.child("Users").child(chatUser).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String Status = dataSnapshot.child("status").getValue().toString();
+
+                mStatus.setText(Status);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        mUserData.child("Chat").child(cUid).child(chatUser).child("seen").setValue(true);
+
         mMessageList.setAdapter(mAdapter);
 
         loadMessages();
+
 
 
         //-----------custombar--------
@@ -117,6 +140,7 @@ public class ChatActivity extends AppCompatActivity {
         dp_img = findViewById(R.id.bar_img);
 
         mTitleView.setText(username);
+        mUserData.keepSynced(true);
 
         //------------------------------Online/Last Seen Check-----------------------
         mUserData.child("Users").child(chatUser).addValueEventListener(new ValueEventListener() {
@@ -124,18 +148,31 @@ public class ChatActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 String online = dataSnapshot.child("online").getValue().toString();
-                String image = dataSnapshot.child("t_img").getValue().toString();
+                final String t_img = dataSnapshot.child("t_img").getValue().toString();
 
                 if(online.equals("true")){
                     mLastseen.setText("Online");
                 }else{
-
                     GetTimeAgo getTimeAgo = new GetTimeAgo();
                     long lastTime =Long.parseLong(online);
 
                     String LastSeenTime = getTimeAgo.getTimeAgo(lastTime,getApplicationContext());
                     mLastseen.setText(LastSeenTime);
                 }
+                Picasso.get().load(t_img).networkPolicy(NetworkPolicy.OFFLINE)
+                        .placeholder(R.drawable.headshot).into(dp_img, new Callback() {
+                    @Override
+                    public void onSuccess() {
+
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+
+                        Picasso.get().load(t_img).placeholder(R.drawable.headshot).into(dp_img);
+
+                    }
+                });
 
             }
 
@@ -196,6 +233,8 @@ public class ChatActivity extends AppCompatActivity {
                 Messages message = dataSnapshot.getValue(Messages.class);
                 messageList.add(message);
                 mAdapter.notifyDataSetChanged();
+
+                mMessageList.scrollToPosition(messageList.size()-1);
             }
 
             @Override
@@ -219,6 +258,22 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        FirebaseUser cUser = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Users");
+        mDatabaseRef.child(cUser.getUid()).child("online").setValue("true");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        FirebaseUser cUser = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Users");
+        mDatabaseRef.child(cUser.getUid()).child("online").setValue(ServerValue.TIMESTAMP);
     }
 
     //--------------Message sending Method/Database-------------------
@@ -245,6 +300,7 @@ public class ChatActivity extends AppCompatActivity {
             messageUserMap.put(chat_user_ref+"/"+push_id,messageMap);
 
             msg_edit.setText("");
+            mUserData.child("Chat").child(chatUser).child(cUid).child("seen").setValue(false);
 
             mUserData.updateChildren(messageUserMap, new DatabaseReference.CompletionListener() {
                 @Override

@@ -2,23 +2,28 @@ package com.codose.betachat;
 
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.codose.betachat.Models.Chat;
+import com.codose.betachat.Models.Conversation;
 import com.codose.betachat.Models.GetTimeAgo;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -87,19 +92,16 @@ public class Chats extends Fragment {
 
     }
     public void startListening(){
-        Query query = FirebaseDatabase.getInstance()
-                .getReference()
-                .child("Chat")
-                .child(current_uid)
-                .limitToLast(50);
+        Query query = mChatsData
+                .orderByChild("timestamp");
 
-        final FirebaseRecyclerOptions<Chat> options =
-                new FirebaseRecyclerOptions.Builder<Chat>()
-                        .setQuery(query, Chat.class)
+        final FirebaseRecyclerOptions<Conversation> options =
+                new FirebaseRecyclerOptions.Builder<Conversation>()
+                        .setQuery(query, Conversation.class)
                         .build();
-        FirebaseRecyclerAdapter adapter = new FirebaseRecyclerAdapter<Chat, ChatsViewHolder>(options) {
+        FirebaseRecyclerAdapter adapter = new FirebaseRecyclerAdapter<Conversation, ChatsViewHolder>(options) {
             @Override
-            protected void onBindViewHolder(@NonNull final ChatsViewHolder holder, int i, @NonNull Chat chat) {
+            protected void onBindViewHolder(@NonNull final ChatsViewHolder holder, int i, @NonNull final Conversation conversation) {
                 // Bind the Chat object to the ChatHolder
                 final String user_id = getRef(i).getKey();
 
@@ -110,6 +112,41 @@ public class Chats extends Fragment {
                         String status = dataSnapshot.child("status").getValue().toString();
                         String t_img = dataSnapshot.child("t_img").getValue().toString();
                         String online = dataSnapshot.child("online").getValue().toString();
+                        DatabaseReference dbref =
+                                FirebaseDatabase.getInstance().getReference();
+                        Query lastchild =
+                                dbref.child("messages")
+                                        .child(current_uid)
+                                        .child(user_id)
+                                        .orderByKey().limitToLast(1);
+                        lastchild.addChildEventListener(new ChildEventListener() {
+                            @Override
+                            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                                String last_message = dataSnapshot.child("message").getValue().toString();
+
+                                holder.setMessage(last_message, conversation.isSeen());
+                            }
+
+                            @Override
+                            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                            }
+
+                            @Override
+                            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+                            }
+
+                            @Override
+                            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
 
                         if(dataSnapshot.hasChild("online")){
                             String userOnline = dataSnapshot.child("online").getValue().toString();
@@ -129,7 +166,6 @@ public class Chats extends Fragment {
 
 
                         holder.setName(username);
-                        holder.setStatus(status);
                         holder.setImage(t_img);
                         holder.mView.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -164,6 +200,7 @@ public class Chats extends Fragment {
         mChatList.setAdapter(adapter);
         adapter.startListening();
     }
+
     public  static class ChatsViewHolder extends RecyclerView.ViewHolder {
         View mView;
         public ChatsViewHolder(View itemView) {
@@ -175,9 +212,16 @@ public class Chats extends Fragment {
             mUsername.setText(name);
         }
 
-        public void setStatus(String status){
+        public void setMessage(String message, boolean isSeen){
             TextView mStatus = (TextView) mView.findViewById(R.id.user_status);
-            mStatus.setText(status);
+            mStatus.setText(message);
+            mStatus.setSingleLine(true);
+            mStatus.setEllipsize(TextUtils.TruncateAt.END);
+            if(!isSeen){
+                mStatus.setTypeface(mStatus.getTypeface(), Typeface.ITALIC);
+            }else{
+                mStatus.setTypeface(mStatus.getTypeface(), Typeface.NORMAL);
+            }
         }
 
         public void setImage(final String t_img) {
@@ -211,7 +255,7 @@ public class Chats extends Fragment {
             View view = mView.findViewById(R.id.online_icon);
 
             if(online_user.equals("true")){
-
+                view.setBackgroundResource(R.drawable.circle);
                 view.setVisibility(View.VISIBLE);
 
             }else{

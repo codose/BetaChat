@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#EBEBEC"
     tools:context=".ChatActivity">
 
     <include
@@ -63,8 +64,29 @@
         android:id="@+id/message_list"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="#D6D8DB"
+        android:layout_marginTop="8dp"
+        android:background="#EBEBEC"
         app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/user_status" />
+
+    <TextView
+        android:id="@+id/user_status"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/msg_12"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:overScrollMode="ifContentScrolls"
+        android:paddingStart="25dp"
+        android:paddingEnd="25dp"
+        android:text="User Status Goes here"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/chat_bar" />

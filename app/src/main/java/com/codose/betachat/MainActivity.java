@@ -40,14 +40,16 @@ public class MainActivity extends AppCompatActivity {
         //tabs
         mViewpager = findViewById(R.id.viewPager);
         mTabLayout = findViewById(R.id.main_tab);
-        mSectionsAdapter = new SectionsAdapter(getSupportFragmentManager());
-        mViewpager.setAdapter(mSectionsAdapter);
-        mTabLayout.setupWithViewPager(mViewpager);
+
         if(mAuth.getCurrentUser()!=null){
             mUserRef = FirebaseDatabase.getInstance().getReference()
                     .child("Users").child(mAuth.getCurrentUser().getUid());
+            mSectionsAdapter = new SectionsAdapter(getSupportFragmentManager());
+            mViewpager.setAdapter(mSectionsAdapter);
+            mTabLayout.setupWithViewPager(mViewpager);
+            mViewpager.setCurrentItem(1);
         }
-        mViewpager.setCurrentItem(1);
+
 
 
     }
@@ -70,7 +72,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        mUserRef.child("online").setValue(ServerValue.TIMESTAMP);
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+
+        if(currentUser == null || !currentUser.isEmailVerified()){
+            mAuth.signOut();
+            launchStart();
+        }else{
+            mUserRef = FirebaseDatabase.getInstance().getReference()
+                    .child("Users").child(mAuth.getCurrentUser().getUid());
+            mUserRef.child("online").setValue(ServerValue.TIMESTAMP);
+        }
     }
 
 
