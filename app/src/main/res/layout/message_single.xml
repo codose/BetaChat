@@ -14,15 +14,19 @@
             android:id="@+id/msg_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="start"
+            android:paddingStart="15dp"
             android:text="0.00"
             android:textSize="10sp"
-            android:gravity="start" />
+            android:paddingEnd="15dp" />
 
     <LinearLayout
         android:id="@+id/msg_single"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
         android:paddingBottom="5dp">
 
         <com.mikhaellopez.circularimageview.CircularImageView
@@ -55,6 +59,17 @@
             app:layout_constraintBottom_toBottomOf="@+id/msg_dp"
             app:layout_constraintStart_toEndOf="@+id/msg_dp"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:id="@+id/seen_icon"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_gravity="bottom"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/ic_check_solid"
+            app:layout_constraintBottom_toBottomOf="@+id/user_single"
+            app:layout_constraintStart_toEndOf="@+id/user_single"
+            app:layout_constraintTop_toTopOf="@+id/user_single" />
 
     </LinearLayout>
 

@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -27,6 +28,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.mikhaellopez.circularimageview.CircularImageView;
@@ -126,7 +128,22 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
-        mUserData.child("Chat").child(cUid).child(chatUser).child("seen").setValue(true);
+        mUserData.child("Chat").child(cUid).child(chatUser).child("seen").setValue("true");
+
+        Query un_read = mUserData.child("messages").child(chatUser).child(cUid).orderByChild("seen").equalTo("false");
+        un_read.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot: dataSnapshot.getChildren()){
+                    snapshot.getRef().child("seen").setValue("true");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         mMessageList.setAdapter(mAdapter);
 
@@ -138,6 +155,15 @@ public class ChatActivity extends AppCompatActivity {
         mTitleView = findViewById(R.id.chat_name);
         mLastseen = findViewById(R.id.last_seen);
         dp_img = findViewById(R.id.bar_img);
+
+        dp_img.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent prof = new Intent(getApplicationContext(),UserProfile.class);
+                prof.putExtra("user_id",chatUser);
+                startActivity(prof);
+            }
+        });
 
         mTitleView.setText(username);
         mUserData.keepSynced(true);
@@ -290,7 +316,7 @@ public class ChatActivity extends AppCompatActivity {
 
             Map messageMap = new HashMap();
             messageMap.put("message",message);
-            messageMap.put("seen", false);
+            messageMap.put("seen", "false");
             messageMap.put("type", "text");
             messageMap.put("time", ServerValue.TIMESTAMP);
             messageMap.put("from", cUid);
@@ -300,7 +326,10 @@ public class ChatActivity extends AppCompatActivity {
             messageUserMap.put(chat_user_ref+"/"+push_id,messageMap);
 
             msg_edit.setText("");
-            mUserData.child("Chat").child(chatUser).child(cUid).child("seen").setValue(false);
+
+            mUserData.child("Chat").child(cUid).child(chatUser).child("seen").setValue("true");
+
+            mUserData.child("Chat").child(chatUser).child(cUid).child("seen").setValue("false");
 
             mUserData.updateChildren(messageUserMap, new DatabaseReference.CompletionListener() {
                 @Override
@@ -308,6 +337,23 @@ public class ChatActivity extends AppCompatActivity {
 
                 }
             });
+
+            Query un_read = mUserData.child("messages").child(chatUser).child(cUid).orderByChild("seen").equalTo("false");
+            un_read.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for (DataSnapshot snapshot: dataSnapshot.getChildren()){
+                        snapshot.getRef().child("seen").setValue("true");
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
+            // mUserData.child("messages").child(cUid).child(chatUser).child("seen").setValue("true");
 
 
         }

@@ -30,7 +30,7 @@ import java.util.Date;
 import java.util.HashMap;
 
 public class UserProfile extends AppCompatActivity {
-    private TextView profile_name, profile_status, friends_count, mutual_count;
+    private TextView profile_name, profile_status, user_full, user_email,user_phone;
     private Button send_req,decline_req;
     private ImageView profile_dp;
     private ProgressBar progressBar;
@@ -45,7 +45,7 @@ public class UserProfile extends AppCompatActivity {
 
 
 
-    private FirebaseUser currentUser;
+    private FirebaseUser currentUser, profileUser;
 
     private DatabaseReference ReqDatabase;
 
@@ -60,9 +60,10 @@ public class UserProfile extends AppCompatActivity {
         final String user_id = getIntent().getStringExtra("user_id");
         profile_name = findViewById(R.id.profile_name);
         profile_status = findViewById(R.id.profile_status);
-        friends_count = findViewById(R.id.friend_count);
-        mutual_count = findViewById(R.id.mutual_count);
         profile_dp = findViewById(R.id.profile_dp);
+        user_full = findViewById(R.id.user_full);
+        user_email = findViewById(R.id.user_email);
+        user_phone = findViewById(R.id.user_phone);
 
         progressBar = findViewById(R.id.progressBar3);
         progressBar.setVisibility(View.VISIBLE);
@@ -93,9 +94,15 @@ public class UserProfile extends AppCompatActivity {
                 String u_name = dataSnapshot.child("username").getValue().toString();
                 String u_status = dataSnapshot.child("status").getValue().toString();
                 String u_img = dataSnapshot.child("image").getValue().toString();
+                String u_phone = dataSnapshot.child("phone").getValue().toString();
+                String u_full = dataSnapshot.child("fullname").getValue().toString();
+                String u_email = dataSnapshot.child("email").getValue().toString();
 
                 profile_name.setText(u_name);
                 profile_status.setText(u_status);
+                user_email.setText(u_email);
+                user_full.setText(u_full);
+                user_phone.setText(u_phone);
                 Picasso.get().load(u_img).placeholder(R.drawable.headshot).into(profile_dp);
 
                 //--------------- FRIENDS -----------//

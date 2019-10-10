@@ -17,4 +17,5 @@
     <string name="update">Update</string>
     <string name="account_settings">Account Settings</string>
     <string name="save">Save</string>
+    <string name="space" />
 </resources>

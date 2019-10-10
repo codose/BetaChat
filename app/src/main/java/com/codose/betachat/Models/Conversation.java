@@ -1,17 +1,17 @@
 package com.codose.betachat.Models;
 
 public class Conversation {
-    public boolean seen;
+    public String seen;
     public long timestamp;
 
     public Conversation() {
     }
 
-    public boolean isSeen() {
+    public String getSeen() {
         return seen;
     }
 
-    public void setSeen(boolean seen) {
+    public void setSeen(String seen) {
         this.seen = seen;
     }
 
@@ -23,7 +23,7 @@ public class Conversation {
         this.timestamp = timestamp;
     }
 
-    public Conversation(boolean seen, long timestamp) {
+    public Conversation(String seen, long timestamp) {
         this.seen = seen;
         this.timestamp = timestamp;
     }

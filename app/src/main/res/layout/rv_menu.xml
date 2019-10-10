@@ -38,7 +38,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:text="TextView"
+        android:text=" "
         android:textColor="@android:color/black"
         android:textSize="18sp"
         android:textStyle="bold"
@@ -49,15 +49,15 @@
         android:id="@+id/user_status"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:ellipsize="end"
         android:maxLines="1"
-        android:text="TextView"
+        android:text=" "
         android:textColor="@android:color/black"
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline11"
         app:layout_constraintStart_toStartOf="@+id/user_single"
         app:layout_constraintTop_toBottomOf="@+id/user_single" />
 
@@ -81,6 +81,14 @@
         app:layout_constraintGuide_percent="0.75"
         app:layout_constraintGuide_begin="20dp" />
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="360dp"
+        app:layout_constraintGuide_percent="0.85" />
+
     <TextView
         android:id="@+id/last_seen"
         android:layout_width="wrap_content"
@@ -96,5 +104,21 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline10"
         app:layout_constraintTop_toTopOf="@+id/user_single" />
+
+    <TextView
+        android:id="@+id/un_read"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:background="@drawable/circle_offline"
+        android:paddingStart="5dp"
+        android:paddingEnd="5dp"
+        android:text="1"
+        android:textColor="#FFFFFF"
+        android:textSize="10sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/user_status"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline11" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

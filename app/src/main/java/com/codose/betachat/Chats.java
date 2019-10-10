@@ -105,6 +105,7 @@ public class Chats extends Fragment {
                 // Bind the Chat object to the ChatHolder
                 final String user_id = getRef(i).getKey();
 
+
                 UsersDatabase.child(user_id).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -112,7 +113,7 @@ public class Chats extends Fragment {
                         String status = dataSnapshot.child("status").getValue().toString();
                         String t_img = dataSnapshot.child("t_img").getValue().toString();
                         String online = dataSnapshot.child("online").getValue().toString();
-                        DatabaseReference dbref =
+                        final DatabaseReference dbref =
                                 FirebaseDatabase.getInstance().getReference();
                         Query lastchild =
                                 dbref.child("messages")
@@ -124,7 +125,7 @@ public class Chats extends Fragment {
                             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                                 String last_message = dataSnapshot.child("message").getValue().toString();
 
-                                holder.setMessage(last_message, conversation.isSeen());
+                                holder.setMessage(last_message, conversation.getSeen());
                             }
 
                             @Override
@@ -163,6 +164,23 @@ public class Chats extends Fragment {
                             String LastSeenTime = getTimeAgo.getTimeAgo(lastTime,getContext());
                             holder.setLastSeen(LastSeenTime);
                         }
+                        Query un_read = dbref.child("messages").child(user_id).child(current_uid).orderByChild("seen").equalTo("false");
+                        un_read.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                int count = 0;
+                                for(DataSnapshot snapshot: dataSnapshot.getChildren()){
+                                    count++;
+                                }
+
+                                holder.setUnread(count);
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
 
 
                         holder.setName(username);
@@ -207,18 +225,29 @@ public class Chats extends Fragment {
             super(itemView);
             mView = itemView;
         }
+        public void setUnread(int count){
+            TextView uCount = mView.findViewById(R.id.un_read);
+            if(count == 0){
+                uCount.setVisibility(View.GONE);
+            }else{
+                String Count = Integer.toString(count);
+                uCount.setVisibility(View.VISIBLE);
+                uCount.setText(Count);
+            }
+
+        }
         public void setName(String name){
             TextView mUsername = (TextView) mView.findViewById(R.id.user_single);
             mUsername.setText(name);
         }
 
-        public void setMessage(String message, boolean isSeen){
+        public void setMessage(String message, String isSeen){
             TextView mStatus = (TextView) mView.findViewById(R.id.user_status);
             mStatus.setText(message);
             mStatus.setSingleLine(true);
             mStatus.setEllipsize(TextUtils.TruncateAt.END);
-            if(!isSeen){
-                mStatus.setTypeface(mStatus.getTypeface(), Typeface.ITALIC);
+            if(isSeen.equals("false")){
+                mStatus.setTypeface(mStatus.getTypeface(), Typeface.BOLD);
             }else{
                 mStatus.setTypeface(mStatus.getTypeface(), Typeface.NORMAL);
             }

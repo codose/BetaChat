@@ -86,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void launchStart() {
+
         Intent startIntent = new Intent(getApplicationContext(),StartActivity.class);
         startIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK );
         startActivity(startIntent);
@@ -105,7 +106,11 @@ public class MainActivity extends AppCompatActivity {
         super.onOptionsItemSelected(item);
         switch (item.getItemId()){
             case R.id.mLogOut:
+                mUserRef = FirebaseDatabase.getInstance().getReference()
+                        .child("Users").child(mAuth.getCurrentUser().getUid());
+                mUserRef.child("online").setValue(ServerValue.TIMESTAMP);
                 mAuth.signOut();
+
                 launchStart();
                 break;
             case R.id.mSettings:

@@ -102,7 +102,7 @@ public class Register extends AppCompatActivity {
         });
     }
 
-    private void newuser(final String username, String email, String password, final String fullname, final String phone) {
+    private void newuser(final String username, final String email, String password, final String fullname, final String phone) {
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -119,6 +119,7 @@ public class Register extends AppCompatActivity {
                             userMap.put("username",username);
                             userMap.put("fullname",fullname);
                             userMap.put("phone",phone);
+                            userMap.put("email",email);
                             userMap.put("status","Hello, I'm  using BetaChat app :)");
                             userMap.put("image","default");
                             userMap.put("t_img","default");

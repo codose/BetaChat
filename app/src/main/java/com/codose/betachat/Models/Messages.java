@@ -3,7 +3,7 @@ package com.codose.betachat.Models;
 public class Messages {
     private String message, type,from;
     private long time;
-    private boolean seen;
+    private String seen;
 
     public String getMessage() {
         return message;
@@ -29,15 +29,15 @@ public class Messages {
         this.time = time;
     }
 
-    public boolean isSeen() {
+    public String getSeen() {
         return seen;
     }
 
-    public void setSeen(boolean seen) {
+    public void setSeen(String seen) {
         this.seen = seen;
     }
 
-    public Messages(String message, String type, long time, boolean seen) {
+    public Messages(String message, String type, long time, String seen) {
         this.message = message;
         this.type = type;
         this.time = time;
@@ -55,7 +55,7 @@ public class Messages {
         this.from = from;
     }
 
-    public Messages(String message, String type, String from, long time, boolean seen) {
+    public Messages(String message, String type, String from, long time, String seen) {
         this.message = message;
         this.type = type;
         this.from = from;
