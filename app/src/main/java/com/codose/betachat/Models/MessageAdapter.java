@@ -128,8 +128,10 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
         if(seen.equals("true")){
             holder.seen_icon.setBackgroundResource(R.drawable.ic_check_double_solid);
-        }else{
+        }else if (seen.equals("false")){
             holder.seen_icon.setBackgroundResource(R.drawable.ic_check_solid);
+        }else{
+            holder.seen_icon.setBackgroundResource(R.drawable.ic_clock_regular);
         }
 
 

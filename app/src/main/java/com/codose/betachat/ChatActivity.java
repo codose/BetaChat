@@ -21,6 +21,8 @@ import android.widget.TextView;
 import com.codose.betachat.Models.GetTimeAgo;
 import com.codose.betachat.Models.MessageAdapter;
 import com.codose.betachat.Models.Messages;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -167,6 +169,7 @@ public class ChatActivity extends AppCompatActivity {
 
         mTitleView.setText(username);
         mUserData.keepSynced(true);
+        mUserData.child("Users").child(chatUser).child("online").keepSynced(false);
 
         //------------------------------Online/Last Seen Check-----------------------
         mUserData.child("Users").child(chatUser).addValueEventListener(new ValueEventListener() {
@@ -329,7 +332,14 @@ public class ChatActivity extends AppCompatActivity {
 
             mUserData.child("Chat").child(cUid).child(chatUser).child("seen").setValue("true");
 
-            mUserData.child("Chat").child(chatUser).child(cUid).child("seen").setValue("false");
+            mUserData.child("Chat").child(chatUser).child(cUid).child("seen").setValue("sent").addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if(task.isSuccessful()){
+                        mUserData.child("Chat").child(chatUser).child(cUid).child("seen").setValue("false");
+                    }
+                }
+            });
 
             mUserData.updateChildren(messageUserMap, new DatabaseReference.CompletionListener() {
                 @Override

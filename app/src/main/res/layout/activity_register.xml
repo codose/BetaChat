@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#00E6E6E6"
+    android:background="@drawable/bg_splash"
     tools:context=".Register">
 
     <ProgressBar
@@ -28,29 +30,28 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="4dp"
         android:layout_marginEnd="8dp"
         app:cardBackgroundColor="@android:color/white"
-        app:cardCornerRadius="5dp"
+        app:cardCornerRadius="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2">
+        app:layout_constraintTop_toBottomOf="@+id/register_text">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@android:color/white">
+            android:layout_height="match_parent">
 
             <EditText
                 android:id="@+id/username"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:background="@drawable/btn_corner"
-                android:padding="12sp"
                 android:autofillHints="@string/username"
+                android:background="@drawable/btn_corner"
                 android:ems="10"
                 android:hint="@string/username"
                 android:inputType="textPersonName"
+                android:padding="12sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -59,12 +60,12 @@
                 android:id="@+id/email"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:autofillHints="@string/email"
                 android:background="@drawable/btn_corner"
                 android:ems="10"
                 android:hint="@string/email"
                 android:inputType="textEmailAddress"
                 android:padding="12sp"
-                android:autofillHints="@string/email"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/username" />
@@ -73,12 +74,12 @@
                 android:id="@+id/pass1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:autofillHints="@string/confirm_password"
                 android:background="@drawable/btn_corner"
                 android:ems="10"
                 android:hint="@string/password"
                 android:inputType="textPassword"
                 android:padding="12sp"
-                android:autofillHints="@string/confirm_password"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/email" />
@@ -87,17 +88,18 @@
                 android:id="@+id/pass2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:autofillHints="@string/confirm_password"
                 android:background="@drawable/btn_corner2"
                 android:ems="10"
                 android:hint="@string/confirm_password"
                 android:inputType="textPassword"
                 android:padding="12sp"
-                android:autofillHints="@string/confirm_password"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/pass1" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
+
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView2"
         android:layout_width="match_parent"
@@ -106,26 +108,25 @@
         android:layout_marginTop="24dp"
         android:layout_marginEnd="8dp"
         app:cardBackgroundColor="@android:color/white"
-        app:cardCornerRadius="5dp"
+        app:cardCornerRadius="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardView">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@android:color/white">
+            android:layout_height="match_parent">
 
             <EditText
                 android:id="@+id/fullname"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:autofillHints="@string/full_name"
                 android:background="@drawable/btn_corner"
                 android:ems="10"
                 android:hint="@string/full_name"
                 android:inputType="textPersonName"
                 android:padding="12sp"
-                android:autofillHints="@string/full_name"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -134,12 +135,12 @@
                 android:id="@+id/phone"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:autofillHints="@string/phone_number"
                 android:background="@drawable/btn_corner2"
                 android:ems="10"
                 android:hint="@string/phone_number"
                 android:inputType="phone"
                 android:padding="12sp"
-                android:autofillHints="@string/phone_number"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/fullname" />
@@ -155,7 +156,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/phone" />
 
             <TextView
-                android:id="@+id/textView4"
+                android:id="@+id/sign_txtt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -175,18 +176,16 @@
     </androidx.cardview.widget.CardView>
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/register_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
-        android:layout_marginEnd="8dp"
         android:fontFamily="@font/poppins"
         android:text="@string/register"
         android:textColor="@color/colorPrimary"
         android:textSize="30sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

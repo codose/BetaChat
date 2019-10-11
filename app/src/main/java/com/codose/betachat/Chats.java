@@ -105,6 +105,8 @@ public class Chats extends Fragment {
                 // Bind the Chat object to the ChatHolder
                 final String user_id = getRef(i).getKey();
 
+                UsersDatabase.child(user_id).child("online").keepSynced(false);
+
 
                 UsersDatabase.child(user_id).addValueEventListener(new ValueEventListener() {
                     @Override

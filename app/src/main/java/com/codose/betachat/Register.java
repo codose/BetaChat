@@ -2,14 +2,17 @@ package com.codose.betachat;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -52,6 +55,10 @@ public class Register extends AppCompatActivity {
 
         regProgress = new ProgressDialog(Register.this);
         verify = new ProgressDialog(Register.this);
+
+        TextView sign_txt = findViewById(R.id.register_text);
+        Typeface face = ResourcesCompat.getFont(this,R.font.pacifico);
+        sign_txt.setTypeface(face);
 
         progressBar.setVisibility(View.GONE);
 

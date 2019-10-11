@@ -2,6 +2,7 @@
 <resources>
     <array name="preloaded_fonts" translatable="false">
         <item>@font/amarante</item>
+        <item>@font/arizonia</item>
         <item>@font/poppins_light</item>
     </array>
 </resources>

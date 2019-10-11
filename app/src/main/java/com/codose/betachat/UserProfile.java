@@ -35,6 +35,8 @@ public class UserProfile extends AppCompatActivity {
     private ImageView profile_dp;
     private ProgressBar progressBar;
 
+    private Toolbar toolbar;
+
     private DatabaseReference mDataRef;
 
     private DatabaseReference mDatabaseRef;
@@ -55,6 +57,10 @@ public class UserProfile extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
+
+        toolbar = findViewById(R.id.profile_bar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
         final String user_id = getIntent().getStringExtra("user_id");
@@ -97,6 +103,8 @@ public class UserProfile extends AppCompatActivity {
                 String u_phone = dataSnapshot.child("phone").getValue().toString();
                 String u_full = dataSnapshot.child("fullname").getValue().toString();
                 String u_email = dataSnapshot.child("email").getValue().toString();
+
+                getSupportActionBar().setTitle(u_name);
 
                 profile_name.setText(u_name);
                 profile_status.setText(u_status);

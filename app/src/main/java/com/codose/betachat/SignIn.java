@@ -2,12 +2,13 @@ package com.codose.betachat;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -27,7 +28,7 @@ import com.google.firebase.iid.InstanceIdResult;
 public class SignIn extends AppCompatActivity {
     private EditText mLogMail, mPassword;
     private View log_user;
-    private TextView new_user;
+    private TextView new_user, sign_txt, forgot;
     private ProgressDialog logProgress;
 
     private DatabaseReference mDatabaseRef;
@@ -45,6 +46,18 @@ public class SignIn extends AppCompatActivity {
         mPassword = findViewById(R.id.log_pass);
         log_user = findViewById(R.id.log_user);
         new_user = findViewById(R.id.new_user);
+        sign_txt = findViewById(R.id.register_text);
+        Typeface face = ResourcesCompat.getFont(this,R.font.pacifico);
+        sign_txt.setTypeface(face);
+        forgot = findViewById(R.id.forgot);
+        forgot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent forgot = new Intent(getApplicationContext(),ForgotPassword.class);
+                startActivity(forgot);
+                finish();
+            }
+        });
 
         logProgress = new ProgressDialog(SignIn.this);
 
