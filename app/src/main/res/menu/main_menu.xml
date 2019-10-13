@@ -8,6 +8,9 @@
         android:id="@+id/mUsers"
         android:title="Users" />
     <item
+        android:id="@+id/mAbout"
+        android:title="About" />
+    <item
         android:id="@+id/mLogOut"
         android:title="@string/log_out" />
 </menu>

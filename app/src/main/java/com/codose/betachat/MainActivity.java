@@ -120,6 +120,10 @@ public class MainActivity extends AppCompatActivity {
             case R.id.mUsers:
                 Intent intent = new Intent(this,AllUsers.class);
                 startActivity(intent);
+                break;
+            case R.id.mAbout:
+                Intent about = new Intent(this,About.class);
+                startActivity(about);
         }
 
         return true;
